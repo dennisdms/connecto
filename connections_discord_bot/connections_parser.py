@@ -2,7 +2,6 @@ from enum import Enum
 import re
 
 
-# TODO figure out better naming for all this stuff
 # TODO give python3 types to everything
 # TODO be able to parse a file where \r\n or \n is the seperator between attempts
 # TODO create ASCII Histogram for showing the attempt distribution and all the stats in general
