@@ -33,6 +33,23 @@ class ConnectionsStats:
         self.attempt_distribution = attempt_distribution
         self.attempt_matrix = attempt_matrix
 
+    def display(self) -> str:
+        return f'Plays: {self.attempts}, Wins: {self.wins} ({round(self.wins / self.attempts * 100, 2)} %)\n\nMistakes\n{self.display_stats_pretty()}\n\nGrouping Order\n{self.grouping_order_stats_pretty()}'
+
+    def display_stats_pretty(self) -> str:
+        out = [f'{i} Mistake(s): {self.attempt_distribution[i]}' for i in range(len(self.attempt_distribution))]
+        return '\n'.join(out)
+
+    def grouping_order_stats_pretty(self) -> str:
+        out = '   1 2 3 4\n'
+        for group, attempts in self.attempt_matrix.items():
+            a_str = ''
+            for a in attempts:
+                a_str = a_str + str(a) + ' '
+            out = out + f'{group} {a_str}\n'
+
+        return out
+
 
 YELLOW = '\U0001f7e8'
 GREEN = '\U0001f7e9'

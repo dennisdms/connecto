@@ -5,6 +5,11 @@ from pathlib import Path
 
 class TestConnectionsParser(unittest.TestCase):
 
+    def test_stats_display(self):
+        result = parse_test_file('test1.txt', '***')
+        stats = connections_parser.analyze_connections_history(result)
+        print(stats.display())
+
     def test_analyze_history(self):
         attempts = parse_test_file('test1.txt', '***')
         stats = connections_parser.analyze_connections_history(attempts)
