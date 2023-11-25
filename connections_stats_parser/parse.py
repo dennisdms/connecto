@@ -14,16 +14,14 @@ connections_pattern = r'Puzzle#(\d+)([🟦🟩🟪🟨]+)'
 
 
 class Connection:
-    def __init__(self, raw_guesses, puzzle_number, won, attempts, order):
-        self.raw_guesses = raw_guesses
-        self.puzzle_number = puzzle_number
-        self.won = won
-        self.attempts = attempts
+    def __init__(self, number, order, attempts, won):
+        self.number = number
         self.order = order
+        self.attempts = attempts
+        self.won = won
 
     def __eq__(self, other):
-        return self.raw_guesses == other.raw_guesses and \
-            self.puzzle_number == other.puzzle_number and \
+        return self.number == other.number and \
             self.won == other.won and \
             self.attempts == other.attempts and \
             self.order == other.order
@@ -43,7 +41,7 @@ def parse_connection_share(share):
 
     attempts = len(guesses)
 
-    return Connection(guesses, num, won, attempts, order)
+    return Connection(num, order, attempts, won)
 
 
 def parse_connections(connections):
@@ -70,13 +68,3 @@ def is_correct_guess(guess):
 def remove_whitespace(s):
     # Removes whitespace and newline chars from a string
     return ''.join(s.split())
-
-
-if __name__ == '__main__':
-    simple_path = Path('../data', 'simple.txt')
-
-    puzzle_num, guesses = parse_connections(simple_path.read_text())
-
-    c = Connection(guesses, puzzle_num, )
-
-    c.puzzle_number = puzzle_num

@@ -27,7 +27,7 @@ class TestParse(unittest.TestCase):
         attempts = 7
         won = True
         order = ['🟦', '🟩', '🟨', '🟪']
-        expected = parse.Connection(raw_guesses, puzzle_num, won, attempts, order)
+        expected = parse.Connection(puzzle_num, order, attempts, won)
         res = parse.parse_connection_share(input)
         self.assertEquals(res, expected)
 
