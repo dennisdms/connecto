@@ -5,6 +5,18 @@ from pathlib import Path
 
 class TestParse(unittest.TestCase):
 
+    def test_analyze_history(self):
+        attempts = get_test_data('test1.txt', '***')
+        stats = parse.analyze_history(attempts)
+        expected_attempt_matrix = {parse.YELLOW: [2, 0, 2, 1],
+                                   parse.GREEN: [1, 2, 0, 2],
+                                   parse.BLUE: [2, 2, 1, 0],
+                                   parse.PURPLE: [0, 1, 2, 2]}
+        self.assertEqual(stats.attempts, 6)
+        self.assertEqual(stats.wins, 5)
+        self.assertEqual(stats.attempt_distribution, [1, 0, 2, 2])
+        self.assertEqual(expected_attempt_matrix, stats.attempt_matrix)
+
     def test_parse_file(self):
         path = Path('test_data', 'test1.txt')
         res = parse.parse_file(path, '***')
@@ -85,3 +97,7 @@ class TestParse(unittest.TestCase):
         expected = """ConnectionsPuzzle#166🟪🟩🟩🟩🟩🟩🟪🟩🟦🟦🟦🟦🟩🟩🟩🟩🟨🟨🟪🟨🟨🟨🟨🟨🟪🟪🟪🟪"""
         res = parse.remove_whitespace(player_input)
         self.assertEquals(expected, res)
+
+
+def get_test_data(file, seperator):
+    return parse.parse_file(Path('test_data', file), seperator)

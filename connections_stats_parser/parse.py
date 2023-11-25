@@ -2,15 +2,13 @@ from enum import Enum
 import re
 
 
-class Category(Enum):
-    YELLOW = '\U0001f7e8'
-    GREEN = '\U0001f7e9'
-    BLUE = '\U0001f7e6'
-    PURPLE = '\U0001f7ea'
-
-
-connections_pattern = r'Puzzle#(\d+)([🟦🟩🟪🟨]+)'
-
+# TODO Move this stuff into parse
+# TODO figure out better naming for all this stuff
+# TODO be able to parse a file where \r\n or \n is the seperator between attempts
+# TODO create ASCII Histogram for showing the attempt distribution and all the stats in general
+# TODO Connect to a discord channel
+# TODO create a dockerfile to run this and pass the API token and bot name as config
+# TODO run image on dwlabs server and connect it to squinner
 
 class Connection:
     def __init__(self, number, order, attempts, won):
@@ -26,10 +24,33 @@ class Connection:
             self.order == other.order
 
 
-def parse_file(file, seperator):
-    # Parses a file of connections attempts - used primarily for testing
-    attempts = file.read_text().split(seperator)
-    return [parse_connection_share(i) for i in attempts]
+class ConnectionsStats:
+    def __init__(self, attempts, wins, attempt_distribution, attempt_matrix):
+        self.attempts = attempts
+        self.wins = wins
+        self.attempt_distribution = attempt_distribution
+        self.attempt_matrix = attempt_matrix
+
+
+YELLOW = '\U0001f7e8'
+GREEN = '\U0001f7e9'
+BLUE = '\U0001f7e6'
+PURPLE = '\U0001f7ea'
+
+
+def analyze_history(connections_attempts):
+    wins = 0
+    attempt_distribution = [0, 0, 0, 0]
+    attempt_matrix = {YELLOW: [0, 0, 0, 0], GREEN: [0, 0, 0, 0], BLUE: [0, 0, 0, 0], PURPLE: [0, 0, 0, 0]}
+    for attempt in connections_attempts:
+        if attempt.won:
+            wins += 1
+            attempt_distribution[attempt.attempts - 4] += 1
+            for i, category in enumerate(attempt.order):
+                attempt_matrix.get(category)[i] += 1
+
+    stats = ConnectionsStats(len(connections_attempts), wins, attempt_distribution, attempt_matrix)
+    return stats
 
 
 def parse_connection_share(share):
@@ -43,6 +64,9 @@ def parse_connection_share(share):
     attempts = len(guesses)
     won = len(order) == 4
     return Connection(num, order, attempts, won)
+
+
+connections_pattern = r'Puzzle#(\d+)([🟦🟩🟪🟨]+)'
 
 
 def parse_connections(connections):
@@ -61,6 +85,12 @@ def parse_connections(connections):
 def guessed_category(guess):
     # Returns the color of the category guesses. If failed return None
     return guess[0] if guess[0] == guess[1] == guess[2] == guess[3] else None
+
+
+def parse_file(file, seperator):
+    # Parses a file of connections attempts - used primarily for testing
+    attempts = file.read_text().split(seperator)
+    return [parse_connection_share(i) for i in attempts]
 
 
 def remove_whitespace(s):
