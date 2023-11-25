@@ -37,7 +37,7 @@ def parse_connection_share(share):
 
     order = []
     for g in guesses:
-        guessed = is_correct_guess(g)
+        guessed = guessed_category(g)
         if guessed is not None:
             order.append(guessed)
 
@@ -64,7 +64,7 @@ def parse_connections(connections):
         return int(puzzle_number), guesses
 
 
-def is_correct_guess(guess):
+def guessed_category(guess):
     # Returns the color of the category guesses. If failed attempt return None
     return guess[0] if guess[0] == guess[1] == guess[2] == guess[3] else None
 

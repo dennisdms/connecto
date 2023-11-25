@@ -69,12 +69,12 @@ class TestParse(unittest.TestCase):
     def test_is_correct_guess_1(self):
         input = ['🟪', '🟪', '🟪', '🟪']
         expected = '🟪'
-        res = parse.is_correct_guess(input)
+        res = parse.guessed_category(input)
         self.assertEquals(res, expected)
 
     def test_is_correct_guess_2(self):
         input = ['🟪', '🟪', '🟪', '🟩']
-        res = parse.is_correct_guess(input)
+        res = parse.guessed_category(input)
         self.assertIsNone(res)
 
     def test_remove_special_chars(self):
