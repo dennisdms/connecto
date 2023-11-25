@@ -26,6 +26,11 @@ class Connection:
             self.order == other.order
 
 
+def parse_file(file, seperator):
+    attempts = file.read_text().split(seperator)
+    return [parse_connection_share(i) for i in attempts]
+
+
 def parse_connection_share(share):
     # Parses the connection share thingy and returns a Connection object
     num, guesses = parse_connections(share)
