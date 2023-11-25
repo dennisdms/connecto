@@ -3,27 +3,31 @@ import re
 
 
 # TODO figure out better naming for all this stuff
+# TODO give python3 types to everything
 # TODO be able to parse a file where \r\n or \n is the seperator between attempts
 # TODO create ASCII Histogram for showing the attempt distribution and all the stats in general
 # TODO Connect to a discord channel
 # TODO create a dockerfile to run this and pass the API token and bot name as config
 # TODO run image on dwlabs server and connect it to squinner
 
-class Connection:
+# Connections consists of four groups where each group is a category
+class ConnectionsResult:
+    # A single connections result
     def __init__(self, number, order, attempts, won):
-        self.number = number
-        self.order = order
+        self.puzzle_number = number
+        self.group_order = order
         self.attempts = attempts
         self.won = won
 
     def __eq__(self, other):
-        return self.number == other.number and \
+        return self.puzzle_number == other.puzzle_number and \
             self.won == other.won and \
             self.attempts == other.attempts and \
-            self.order == other.order
+            self.group_order == other.group_order
 
 
 class ConnectionsStats:
+    # Aggregated statistics for a series of ConnectionsResults
     def __init__(self, attempts, wins, attempt_distribution, attempt_matrix):
         self.attempts = attempts
         self.wins = wins
@@ -37,38 +41,40 @@ BLUE = '\U0001f7e6'
 PURPLE = '\U0001f7ea'
 
 
-def analyze_history(connections_attempts):
+def analyze_connections_history(connections_attempts):
     wins = 0
     attempt_distribution = [0, 0, 0, 0]
-    attempt_matrix = {YELLOW: [0, 0, 0, 0], GREEN: [0, 0, 0, 0], BLUE: [0, 0, 0, 0], PURPLE: [0, 0, 0, 0]}
+    attempt_matrix = {YELLOW: [0, 0, 0, 0],
+                      GREEN: [0, 0, 0, 0],
+                      BLUE: [0, 0, 0, 0],
+                      PURPLE: [0, 0, 0, 0]}
     for attempt in connections_attempts:
         if attempt.won:
             wins += 1
             attempt_distribution[attempt.attempts - 4] += 1
-            for i, category in enumerate(attempt.order):
+            for i, category in enumerate(attempt.group_order):
                 attempt_matrix.get(category)[i] += 1
 
-    stats = ConnectionsStats(len(connections_attempts), wins, attempt_distribution, attempt_matrix)
-    return stats
+    return ConnectionsStats(len(connections_attempts), wins, attempt_distribution, attempt_matrix)
 
 
-def parse_connection_share(share):
-    # Parses the connection share thingy and returns a Connection object
-    num, guesses = parse_connections(share)
+def parse_connections_result(result):
+    # Parses a connections result into a ConnectionsResult object
+    num, guesses = parse_connections_share_string(result)
     order = []
     for g in guesses:
-        guessed = guessed_category(g)
+        guessed = grouped_category(g)
         if guessed is not None:
             order.append(guessed)
     attempts = len(guesses)
     won = len(order) == 4
-    return Connection(num, order, attempts, won)
+    return ConnectionsResult(num, order, attempts, won)
 
 
 connections_pattern = r'Puzzle#(\d+)([🟦🟩🟪🟨]+)'
 
 
-def parse_connections(connections):
+def parse_connections_share_string(connections):
     # Parse a raw connection attempt and return puzzle_number, array of guesses
     match = re.search(connections_pattern, remove_whitespace(connections))
     if match:
@@ -81,15 +87,15 @@ def parse_connections(connections):
         return int(puzzle_number), guesses
 
 
-def guessed_category(guess):
-    # Returns the color of the category guesses. If failed return None
+def grouped_category(guess):
+    # Returns the color of the category correctly group. If failed return None
     return guess[0] if guess[0] == guess[1] == guess[2] == guess[3] else None
 
 
 def parse_file(file, seperator):
-    # Parses a file of connections attempts - used primarily for testing
+    # Parses a file of connections results - used primarily for testing
     attempts = file.read_text().split(seperator)
-    return [parse_connection_share(i) for i in attempts]
+    return [parse_connections_result(i) for i in attempts]
 
 
 def remove_whitespace(s):
