@@ -6,7 +6,7 @@ from pathlib import Path
 class TestParse(unittest.TestCase):
 
     def test_analyze_history(self):
-        attempts = get_test_data('test1.txt', '***')
+        attempts = parse_test_file('test1.txt', '***')
         stats = parse.analyze_history(attempts)
         expected_attempt_matrix = {parse.YELLOW: [2, 0, 2, 1],
                                    parse.GREEN: [1, 2, 0, 2],
@@ -18,8 +18,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(expected_attempt_matrix, stats.attempt_matrix)
 
     def test_parse_file(self):
-        path = Path('test_data', 'test1.txt')
-        res = parse.parse_file(path, '***')
+        res = parse_test_file('test1.txt', '***')
         a1 = parse.Connection(166, ['🟦', '🟩', '🟨', '🟪'], 7, True)
         a2 = parse.Connection(166, [], 4, False)
         a3 = parse.Connection(165, ['🟨', '🟦', '🟪', '🟩'], 7, True)
@@ -99,5 +98,5 @@ class TestParse(unittest.TestCase):
         self.assertEquals(expected, res)
 
 
-def get_test_data(file, seperator):
+def parse_test_file(file, seperator):
     return parse.parse_file(Path('test_data', file), seperator)
