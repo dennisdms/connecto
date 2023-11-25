@@ -15,7 +15,7 @@ class TestParse(unittest.TestCase):
         a5 = parse.Connection(165, ['🟩', '🟪', '🟦', '🟨'], 4, True)
         a6 = parse.Connection(164, ['🟦', '🟩', '🟨', '🟪'], 6, True)
         expected = [a1, a2, a3, a4, a5, a6]
-        self.assertEquals(res, expected)
+        self.assertEquals(expected, res)
 
     def test_parse_connection_share(self):
         input = """
@@ -42,7 +42,7 @@ class TestParse(unittest.TestCase):
         order = ['🟦', '🟩', '🟨', '🟪']
         expected = parse.Connection(puzzle_num, order, attempts, won)
         res = parse.parse_connection_share(input)
-        self.assertEquals(res, expected)
+        self.assertEquals(expected, res)
 
     def test_parse_connections(self):
         input = """
@@ -70,7 +70,7 @@ class TestParse(unittest.TestCase):
         input = ['🟪', '🟪', '🟪', '🟪']
         expected = '🟪'
         res = parse.guessed_category(input)
-        self.assertEquals(res, expected)
+        self.assertEquals(expected, res)
 
     def test_is_correct_guess_2(self):
         input = ['🟪', '🟪', '🟪', '🟩']
@@ -91,4 +91,4 @@ class TestParse(unittest.TestCase):
         """
         expected = """ConnectionsPuzzle#166🟪🟩🟩🟩🟩🟩🟪🟩🟦🟦🟦🟦🟩🟩🟩🟩🟨🟨🟪🟨🟨🟨🟨🟨🟪🟪🟪🟪"""
         res = parse.remove_whitespace(input)
-        self.assertEquals(res, expected)
+        self.assertEquals(expected, res)
