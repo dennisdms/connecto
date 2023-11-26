@@ -9,6 +9,7 @@ from pathlib import Path
 # TODO create a dockerfile to run this and pass the API token and bot name as config
 # TODO run image on dwlabs server and connect it to squinner
 # TODO need to clean user input - puzzle numbs need to be unique
+# TODO add current streak and longest streak
 
 # Connections consists of four groups where each group is a category
 class ConnectionsResult:
