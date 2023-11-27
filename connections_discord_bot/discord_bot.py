@@ -3,7 +3,6 @@ from discord import Intents
 from discord.ext import commands
 from connections_discord_bot import connections_parser
 
-TOKEN = os.environ['TOKEN']
 intents = Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
@@ -16,6 +15,7 @@ async def on_ready():
 
 @bot.command()
 async def stats(ctx, mode):
+    print(f'{ctx.author} issued stats command in {mode} mode')
     if mode == 'public':
         results = []
         async for m in ctx.channel.history(limit=100):
@@ -25,6 +25,10 @@ async def stats(ctx, mode):
                     results.append(res)
         stats = connections_parser.analyze_connections_history(results)
         await ctx.send(stats.display())
+    else:
+        print(f'{ctx.author} issued stats command in unknown {mode} mode')
 
 
-bot.run(TOKEN)
+if __name__ == '__main__':
+    TOKEN = os.environ['TOKEN']
+    bot.run(TOKEN)
