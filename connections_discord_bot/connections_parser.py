@@ -10,7 +10,8 @@ from pathlib import Path
 # TODO need to clean user input - puzzle numbs need to be unique
 # TODO add current streak and longest streak
 # TODO make code more robust - add method to check if message is parsable
-# #TODO give connecto a nice picture and description
+# TODO give connecto a nice picture and description
+# TODO create help command!
 
 # Connections consists of four groups where each group is a category
 class ConnectionsResult:
