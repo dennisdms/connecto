@@ -5,11 +5,12 @@ from pathlib import Path
 
 # TODO be able to parse a file where \r\n or \n is the seperator between attempts
 # TODO create ASCII Histogram for showing the attempt distribution and all the stats in general
-# TODO Connect to a discord channel
 # TODO create a dockerfile to run this and pass the API token and bot name as config
 # TODO run image on dwlabs server and connect it to squinner
 # TODO need to clean user input - puzzle numbs need to be unique
 # TODO add current streak and longest streak
+# TODO make code more robust - add method to check if message is parsable
+# #TODO give connecto a nice picture and description
 
 # Connections consists of four groups where each group is a category
 class ConnectionsResult:
@@ -77,8 +78,14 @@ def analyze_connections_history(connections_attempts: list[ConnectionsResult]) -
 
 
 def parse_connections_result(result: str) -> ConnectionsResult:
+    if result is None:
+        return None
     # Parses a connections result into a ConnectionsResult object
     num, guesses = parse_connections_share_string(result)
+
+    if num is None or guesses is None:
+        return None
+
     order = []
     for g in guesses:
         guessed = grouped_category(g)
@@ -103,6 +110,8 @@ def parse_connections_share_string(connections: str) -> tuple[int, list[list[str
             guesses.append(list(emojis_group[i:i + 4]))
 
         return int(puzzle_number), guesses
+
+    return None, None
 
 
 def grouped_category(guess: list[str]) -> str:
