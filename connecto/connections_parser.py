@@ -10,10 +10,12 @@ from pathlib import Path
 # TODO add current streak and longest streak
 # TODO make code more robust - add method to check if message is parsable
 # TODO give connecto a nice picture and description
+# TODO configure a proper logger
 
 # Nice to-haves
 # TODO be able to parse a file where \r\n or \n is the seperator between attempts
 # TODO create ASCII Histogram for showing the attempt distribution and all the stats in general
+# TODO create pretty embedded output
 
 # Connections consists of four groups where each group is a category
 class ConnectionsResult:
