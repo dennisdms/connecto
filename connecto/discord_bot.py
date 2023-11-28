@@ -7,7 +7,7 @@ from discord import option
 from connecto import connections_parser
 
 intents = Intents.default()
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = discord.Bot(intents=intents)
 
 
 @bot.event
