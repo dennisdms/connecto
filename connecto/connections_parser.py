@@ -83,22 +83,18 @@ def analyze_connections_history(connections_attempts: list[ConnectionsResult]) -
 
 
 def parse_connections_result(result: str) -> ConnectionsResult:
-    if result is None:
-        return None
-    # Parses a connections result into a ConnectionsResult object
-    num, guesses = parse_connections_share_string(result)
-
-    if num is None or guesses is None:
-        return None
-
-    order = []
-    for g in guesses:
-        guessed = grouped_category(g)
-        if guessed is not None:
-            order.append(guessed)
-    attempts = len(guesses)
-    won = len(order) == 4
-    return ConnectionsResult(num, order, attempts, won)
+    # Parses a connections result into a ConnectionsResult object. Returns None if it can't be parsed
+    out = parse_connections_share_string(result)
+    if out is not None:
+        num, guesses = out
+        order = []
+        for g in guesses:
+            guessed = grouped_category(g)
+            if guessed is not None:
+                order.append(guessed)
+        attempts = len(guesses)
+        won = len(order) == 4
+        return ConnectionsResult(num, order, attempts, won)
 
 
 connections_pattern = r'Puzzle#(\d+)([🟦🟩🟪🟨]+)'
@@ -116,8 +112,6 @@ def parse_connections_share_string(connections: str) -> tuple[int, list[list[str
 
         return int(puzzle_number), guesses
 
-    return None, None
-
 
 def grouped_category(guess: list[str]) -> str:
     # Returns the category correctly grouped. If failed, return None
@@ -127,7 +121,12 @@ def grouped_category(guess: list[str]) -> str:
 def parse_file(file: Path, seperator: str) -> list[ConnectionsResult]:
     # Parses a file of connections results - used primarily for testing
     attempts = file.read_text(encoding='utf-8').split(seperator)
-    return [parse_connections_result(i) for i in attempts]
+    results = []
+    for attempt in attempts:
+        parsed_attempt = parse_connections_result(attempt)
+        if parsed_attempt is not None:
+            results.append(parsed_attempt)
+    return results
 
 
 def remove_whitespace(s: str) -> str:

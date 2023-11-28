@@ -33,6 +33,10 @@ class TestConnectionsParser(unittest.TestCase):
         expected = [a1, a2, a3, a4, a5, a6]
         self.assertEquals(expected, res)
 
+    def test_parse_file_empty(self):
+        res = parse_test_file('empty.txt', '***')
+        self.assertEquals(0, len(res))
+
     def test_parse_connection_share(self):
         player_input = """
         Connections
@@ -86,7 +90,7 @@ class TestConnectionsParser(unittest.TestCase):
         res = connections_parser.grouped_category(guess)
         self.assertIsNone(res)
 
-    def test_remove_special_chars(self):
+    def test_remove_whitespace(self):
         player_input = """
         Connections
         Puzzle #166
