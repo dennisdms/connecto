@@ -1,5 +1,5 @@
 import unittest
-from connections_discord_bot import connections_parser
+from connecto import connections_parser
 from pathlib import Path
 
 

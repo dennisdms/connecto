@@ -1,7 +1,7 @@
 import os
 from discord import Intents
 from discord.ext import commands
-from connections_discord_bot import connections_parser
+from connecto import connections_parser
 
 intents = Intents.default()
 intents.message_content = True
