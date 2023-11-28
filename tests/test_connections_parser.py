@@ -10,6 +10,10 @@ class TestConnectionsParser(unittest.TestCase):
         stats = connections_parser.analyze_connections_history(result)
         print(stats.display())
 
+    def test_stats_display_empty(self):
+        history = connections_parser.ConnectionsStats(0, 0, [], {})
+        print(history.display())
+
     def test_analyze_history(self):
         attempts = parse_test_file('test1.txt', '***')
         stats = connections_parser.analyze_connections_history(attempts)
