@@ -10,8 +10,6 @@ from pathlib import Path
 # TODO add current streak and longest streak
 # TODO make code more robust - add method to check if message is parsable
 # TODO give connecto a nice picture and description
-# TODO create help command!
-# TODO migrate to Pycord
 
 # Nice to-haves
 # TODO be able to parse a file where \r\n or \n is the seperator between attempts
