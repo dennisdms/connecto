@@ -1,11 +1,12 @@
 import os
+
+import discord
 from discord import Intents
 from discord.ext import commands
 from discord import option
 from connecto import connections_parser
 
 intents = Intents.default()
-intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
@@ -18,17 +19,23 @@ async def on_ready():
 @option("visibility", description="Post stats here or get a DM", choices=["public", "private"])
 async def stats(ctx, visibility):
     print(f'{ctx.author} issued stats command in {visibility} visibility')
+    user_history = await get_message_history(ctx.channel, ctx.author)
+    user_stats = connections_parser.analyze_connections_history(user_history)
     if visibility == 'public':
-        results = []
-        async for m in ctx.channel.history(limit=100):
-            if ctx.author == m.author:
-                res = connections_parser.parse_connections_result(m.content)
-                if res is not None:
-                    results.append(res)
-        stats = connections_parser.analyze_connections_history(results)
-        await ctx.respond(stats.display())
+        await ctx.respond(user_stats.display())
     elif visibility == 'private':
+        await ctx.user.send(user_stats.display())
         await ctx.respond("Sent!")
+
+
+async def get_message_history(channel, author):
+    results = []
+    async for m in channel.history(limit=100):
+        if author == m.author:
+            res = connections_parser.parse_connections_result(m.content)
+            if res is not None:
+                results.append(res)
+    return results
 
 
 if __name__ == '__main__':
