@@ -1,29 +1,30 @@
 import os
 
 import discord
-from discord import Intents
-from discord.ext import commands
-from discord import option
 from connecto import connections_parser
 
-intents = Intents.default()
+intents = discord.Intents.default()
 bot = discord.Bot(intents=intents)
 
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 
 @bot.slash_command(name="stats", description="Get your Connections stats!")
-@option("visibility", description="Post stats here or get a DM", choices=["public", "private"])
+@discord.option(
+    "visibility",
+    description="Post stats here or get a DM",
+    choices=["public", "private"],
+)
 async def stats(ctx, visibility):
-    print(f'{ctx.author} issued stats command in {visibility} visibility')
+    print(f"{ctx.author} issued stats command in {visibility} visibility")
     user_history = await get_message_history(ctx.channel, ctx.author)
     user_stats = connections_parser.analyze_connections_history(user_history)
-    if visibility == 'public':
+    if visibility == "public":
         await ctx.respond(user_stats.display())
-    elif visibility == 'private':
+    elif visibility == "private":
         await ctx.user.send(user_stats.display())
         await ctx.respond("Sent!")
 
@@ -38,6 +39,6 @@ async def get_message_history(channel, author):
     return results
 
 
-if __name__ == '__main__':
-    TOKEN = os.environ['TOKEN']
+if __name__ == "__main__":
+    TOKEN = os.environ["TOKEN"]
     bot.run(TOKEN)
