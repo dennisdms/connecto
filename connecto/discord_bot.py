@@ -14,7 +14,7 @@ async def on_ready():
 
 @bot.slash_command(name="stats", description="Get your Connections stats!")
 @discord.option(
-    "visibility",
+    name="visibility",
     description="Post stats here or get a DM",
     choices=["public", "private"],
 )
