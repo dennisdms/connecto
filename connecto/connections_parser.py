@@ -126,7 +126,7 @@ def grouped_category(guess: list[str]) -> str:
 
 def parse_file(file: Path, seperator: str) -> list[ConnectionsResult]:
     # Parses a file of connections results - used primarily for testing
-    attempts = file.read_text().split(seperator)
+    attempts = file.read_text(encoding='utf-8').split(seperator)
     return [parse_connections_result(i) for i in attempts]
 
 
