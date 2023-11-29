@@ -103,15 +103,24 @@ class TestConnectionsParser(unittest.TestCase):
         self.assertIsNone(res)
 
     def test_is_parsable_expected_true(self):
-        data = parse_test_file_raw("connections.txt", "***")
+        data = parse_test_file_raw("message_history.txt", "***")
         parsable = connections_parser.remove_whitespace(data[0])
         can_parse = connections_parser.is_parsable(parsable)
         self.assertTrue(can_parse)
 
     def test_is_parsable_expected_false(self):
-        data = "should not be able to parse this"
-        can_parse = connections_parser.is_parsable(data)
+        data = parse_test_file_raw("message_history.txt", "***")
+        parsable = connections_parser.remove_whitespace(data[1])
+        can_parse = connections_parser.is_parsable(parsable)
         self.assertFalse(can_parse)
+
+    def test_is_parsable_expected_can_parse_two_message(self):
+        data = parse_test_file_raw("message_history.txt", "***")
+        parsables = 0
+        for msg in data:
+            if connections_parser.is_parsable(msg):
+                parsables += 1
+        self.assertTrue(2, parsables)
 
     def test_remove_whitespace(self):
         player_input = """
