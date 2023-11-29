@@ -1,7 +1,6 @@
 from connecto import connections_parser
 import discord
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 intents = discord.Intents.default()
