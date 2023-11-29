@@ -104,7 +104,7 @@ def parse_connections_result(result: str) -> ConnectionsResult:
         return ConnectionsResult(num, order, attempts, won)
 
 
-connections_pattern = r"Puzzle#(\d+)([🟦🟩🟪🟨]+)"
+connections_pattern = r"ConnectionsPuzzle#(\d+)([🟦🟩🟪🟨]+)"
 
 
 def parse_connections_share_string(connections: str) -> tuple[int, list[list[str]]]:
@@ -134,6 +134,10 @@ def parse_file(file: Path, seperator: str) -> list[ConnectionsResult]:
         if parsed_attempt is not None:
             results.append(parsed_attempt)
     return results
+
+
+def is_parsable(possible_connections_game: str) -> bool:
+    return bool(re.fullmatch(connections_pattern, possible_connections_game))
 
 
 def remove_whitespace(s: str) -> str:
