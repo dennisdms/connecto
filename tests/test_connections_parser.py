@@ -5,7 +5,7 @@ from pathlib import Path
 
 class TestConnectionsParser(unittest.TestCase):
     def test_stats_display(self):
-        result = parse_test_file("test1.txt", "***")
+        result = parse_test_file("connections.txt", "***")
         stats = connections_parser.analyze_connections_history(result)
         print(stats.display())
 
@@ -14,7 +14,7 @@ class TestConnectionsParser(unittest.TestCase):
         print(history.display())
 
     def test_analyze_history(self):
-        attempts = parse_test_file("test1.txt", "***")
+        attempts = parse_test_file("connections.txt", "***")
         stats = connections_parser.analyze_connections_history(attempts)
         expected_attempt_matrix = {
             connections_parser.YELLOW: [2, 0, 2, 1],
@@ -28,7 +28,7 @@ class TestConnectionsParser(unittest.TestCase):
         self.assertEqual(expected_attempt_matrix, stats.attempt_matrix)
 
     def test_parse_file(self):
-        res = parse_test_file("test1.txt", "***")
+        res = parse_test_file("connections.txt", "***")
         a1 = connections_parser.ConnectionsResult(166, ["🟦", "🟩", "🟨", "🟪"], 7, True)
         a2 = connections_parser.ConnectionsResult(166, [], 4, False)
         a3 = connections_parser.ConnectionsResult(165, ["🟨", "🟦", "🟪", "🟩"], 7, True)
@@ -91,22 +91,27 @@ class TestConnectionsParser(unittest.TestCase):
         res = connections_parser.parse_connections_share_string(player_input)
         self.assertEquals(res, expected)
 
-    def test_is_correct_guess_1(self):
+    def test_is_correct_guess_expected_purple(self):
         guess = ["🟪", "🟪", "🟪", "🟪"]
         expected = "🟪"
         res = connections_parser.grouped_category(guess)
         self.assertEquals(expected, res)
 
-    def test_is_correct_guess_2(self):
+    def test_is_correct_guess_expected_none(self):
         guess = ["🟪", "🟪", "🟪", "🟩"]
         res = connections_parser.grouped_category(guess)
         self.assertIsNone(res)
 
     def test_is_parsable_expected_true(self):
-        data = parse_test_file_raw("test1.txt", "***")
+        data = parse_test_file_raw("connections.txt", "***")
         parsable = connections_parser.remove_whitespace(data[0])
         can_parse = connections_parser.is_parsable(parsable)
-        self.assertEquals(True, can_parse)
+        self.assertTrue(can_parse)
+
+    def test_is_parsable_expected_false(self):
+        data = "should not be able to parse this"
+        can_parse = connections_parser.is_parsable(data)
+        self.assertFalse(can_parse)
 
     def test_remove_whitespace(self):
         player_input = """
