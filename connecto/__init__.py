@@ -17,4 +17,3 @@ logger_handler.setFormatter(logger_formatter)
 
 # Add the Handler to the Logger
 logger.addHandler(logger_handler)
-logger.info("Completed configuring logger()!")
