@@ -3,8 +3,7 @@ import discord
 import logging
 
 logger = logging.getLogger(__name__)
-intents = discord.Intents.default()
-bot = discord.Bot(intents=intents)
+bot = discord.Bot(intents=discord.Intents.default())
 
 
 @bot.event
