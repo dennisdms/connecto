@@ -1,5 +1,5 @@
 import unittest
-from connecto import connections_parser
+from connecto.bot import connections_parser
 from pathlib import Path
 
 

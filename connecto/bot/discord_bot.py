@@ -1,4 +1,4 @@
-from connecto import connections_parser
+from connecto.bot import connections_parser
 import discord
 import logging
 
@@ -21,6 +21,7 @@ async def stats(ctx, visibility):
     logger.info(f"{ctx.author} issued stats command with {visibility} visibility")
     user_history = await get_message_history(ctx.channel, ctx.author)
     user_stats = connections_parser.analyze_connections_history(user_history)
+    await get_message_history_raw(ctx.channel, ctx.author)
     if visibility == "public":
         await ctx.respond(user_stats.display())
     elif visibility == "private":
@@ -30,9 +31,17 @@ async def stats(ctx, visibility):
 
 async def get_message_history(channel, author):
     results = []
-    async for m in channel.history(limit=200):
+    async for m in channel.history():
         if author == m.author:
             res = connections_parser.parse_connections_result(m.content)
             if res is not None:
                 results.append(res)
+    return results
+
+
+async def get_message_history_raw(channel, author):
+    results = []
+    async for m in channel.history(limit=None):
+        if author == m.author:
+            results.append(m.content)
     return results
