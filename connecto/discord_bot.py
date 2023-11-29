@@ -31,7 +31,7 @@ async def stats(ctx, visibility):
 
 async def get_message_history(channel, author):
     results = []
-    async for m in channel.history(limit=100):
+    async for m in channel.history(limit=200):
         if author == m.author:
             res = connections_parser.parse_connections_result(m.content)
             if res is not None:
