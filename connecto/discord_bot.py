@@ -1,15 +1,16 @@
+from connecto import connections_parser
+import discord
+import logging
 import os
 
-import discord
-from connecto import connections_parser
-
+logger = logging.getLogger(__name__)
 intents = discord.Intents.default()
 bot = discord.Bot(intents=intents)
 
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    logger.info(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 
 @bot.slash_command(name="stats", description="Get your Connections stats!")
@@ -19,7 +20,7 @@ async def on_ready():
     choices=["public", "private"],
 )
 async def stats(ctx, visibility):
-    print(f"{ctx.author} issued stats command in {visibility} visibility")
+    logger.info(f"{ctx.author} issued stats command with {visibility} visibility")
     user_history = await get_message_history(ctx.channel, ctx.author)
     user_stats = connections_parser.analyze_connections_history(user_history)
     if visibility == "public":
@@ -37,8 +38,3 @@ async def get_message_history(channel, author):
             if res is not None:
                 results.append(res)
     return results
-
-
-if __name__ == "__main__":
-    TOKEN = os.environ["TOKEN"]
-    bot.run(TOKEN)
