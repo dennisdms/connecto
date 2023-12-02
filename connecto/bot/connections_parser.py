@@ -50,7 +50,7 @@ class ConnectionsStats:
         return "\n".join(out)
 
     def grouping_order_stats_pretty(self) -> str:
-        out = "   1 2 3 4\n"
+        out = ""
         for group, attempts in self.attempt_matrix.items():
             a_str = ""
             for a in attempts:
