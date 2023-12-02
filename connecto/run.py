@@ -1,4 +1,4 @@
-from connecto.bot import discord_bot
+from bot import discord_bot
 import logging
 import os
 
