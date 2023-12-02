@@ -10,7 +10,7 @@ class TestConnectionsParser(unittest.TestCase):
         expected_stats = connections_parser.ConnectionsStats(
             2,
             1,
-            [0, 1, 0, 0],
+            [0, 0, 1, 0, 1],
             {
                 connections_parser.YELLOW: [0, 1, 0, 0],
                 connections_parser.GREEN: [1, 0, 0, 0],
@@ -67,17 +67,17 @@ class TestConnectionsParser(unittest.TestCase):
         }
         self.assertEqual(stats.attempts, 6)
         self.assertEqual(stats.wins, 5)
-        self.assertEqual(stats.attempt_distribution, [1, 0, 2, 2])
+        self.assertEqual([1, 0, 2, 2, 1], stats.mistake_distribution)
         self.assertEqual(expected_attempt_matrix, stats.attempt_matrix)
 
     def test_parse_file(self):
         res = parse_test_file("connections.txt", "***")
-        a1 = connections_parser.ConnectionsResult(166, ["🟦", "🟩", "🟨", "🟪"], 7, True)
+        a1 = connections_parser.ConnectionsResult(166, ["🟦", "🟩", "🟨", "🟪"], 3, True)
         a2 = connections_parser.ConnectionsResult(166, [], 4, False)
-        a3 = connections_parser.ConnectionsResult(165, ["🟨", "🟦", "🟪", "🟩"], 7, True)
-        a4 = connections_parser.ConnectionsResult(165, ["🟨", "🟦", "🟪", "🟩"], 6, True)
-        a5 = connections_parser.ConnectionsResult(165, ["🟩", "🟪", "🟦", "🟨"], 4, True)
-        a6 = connections_parser.ConnectionsResult(164, ["🟦", "🟩", "🟨", "🟪"], 6, True)
+        a3 = connections_parser.ConnectionsResult(165, ["🟨", "🟦", "🟪", "🟩"], 3, True)
+        a4 = connections_parser.ConnectionsResult(165, ["🟨", "🟦", "🟪", "🟩"], 2, True)
+        a5 = connections_parser.ConnectionsResult(165, ["🟩", "🟪", "🟦", "🟨"], 0, True)
+        a6 = connections_parser.ConnectionsResult(164, ["🟦", "🟩", "🟨", "🟪"], 2, True)
         expected = [a1, a2, a3, a4, a5, a6]
         self.assertEquals(expected, res)
 
@@ -98,11 +98,11 @@ class TestConnectionsParser(unittest.TestCase):
         🟪🟪🟪🟪
         """
         puzzle_num = 166
-        attempts = 7
+        mistakes = 3
         won = True
         order = ["🟦", "🟩", "🟨", "🟪"]
         expected = connections_parser.ConnectionsResult(
-            puzzle_num, order, attempts, won
+            puzzle_num, order, mistakes, won
         )
         res = connections_parser.parse_connections_result(player_input)
         self.assertEquals(expected, res)

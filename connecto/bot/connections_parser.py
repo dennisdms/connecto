@@ -6,18 +6,18 @@ from pathlib import Path
 class ConnectionsResult:
     # A single connections result
     def __init__(
-        self, puzzle_number: int, group_order: list[str], attempts: int, won: int
+        self, puzzle_number: int, group_order: list[str], mistakes: int, won: int
     ) -> None:
         self.puzzle_number = puzzle_number
         self.group_order = group_order
-        self.attempts = attempts
+        self.mistakes = mistakes
         self.won = won
 
     def __eq__(self, other) -> bool:
         return (
             self.puzzle_number == other.puzzle_number
             and self.won == other.won
-            and self.attempts == other.attempts
+            and self.mistakes == other.mistakes
             and self.group_order == other.group_order
         )
 
@@ -28,12 +28,12 @@ class ConnectionsStats:
         self,
         attempts: int,
         wins: int,
-        attempt_distribution: list[int],
+        mistake_distribution: list[int],
         attempt_matrix: dict[str, list[int]],
     ):
         self.attempts = attempts
         self.wins = wins
-        self.attempt_distribution = attempt_distribution
+        self.mistake_distribution = mistake_distribution
         self.attempt_matrix = attempt_matrix
 
     def display(self) -> str:
@@ -44,8 +44,8 @@ class ConnectionsStats:
 
     def display_stats_pretty(self) -> str:
         out = [
-            f"{i} Mistake(s): {self.attempt_distribution[i]}"
-            for i in range(len(self.attempt_distribution))
+            f"{i} Mistake(s): {self.mistake_distribution[i]}"
+            for i in range(len(self.mistake_distribution))
         ]
         return "\n".join(out)
 
@@ -63,7 +63,7 @@ class ConnectionsStats:
         return (
             self.attempts == other.attempts
             and self.wins == other.wins
-            and self.attempt_distribution == other.attempt_distribution
+            and self.mistake_distribution == other.mistake_distribution
             and self.attempt_matrix == other.attempt_matrix
         )
 
@@ -78,7 +78,7 @@ def analyze_connections_history(
     connections_attempts: list[ConnectionsResult],
 ) -> ConnectionsStats:
     wins = 0
-    attempt_distribution = [0, 0, 0, 0]
+    mistake_distribution = [0, 0, 0, 0, 0]
     attempt_matrix = {
         YELLOW: [0, 0, 0, 0],
         GREEN: [0, 0, 0, 0],
@@ -86,20 +86,22 @@ def analyze_connections_history(
         PURPLE: [0, 0, 0, 0],
     }
     for attempt in connections_attempts:
-        attempt_distribution[attempt.attempts - 4] += 1
+        assert 0 <= attempt.mistakes <= 4
+        mistake_distribution[attempt.mistakes] += 1
         if attempt.won:
             wins += 1
             for i, category in enumerate(attempt.group_order):
                 attempt_matrix.get(category)[i] += 1
 
     return ConnectionsStats(
-        len(connections_attempts), wins, attempt_distribution, attempt_matrix
+        len(connections_attempts), wins, mistake_distribution, attempt_matrix
     )
 
 
 def parse_connections_result(result: str) -> ConnectionsResult:
     # Parses a connections result into a ConnectionsResult object. Returns None if it can't be parsed
     out = parse_connections_share_string(result)
+    mistakes = 0
     if out is not None:
         num, guesses = out
         order = []
@@ -107,9 +109,10 @@ def parse_connections_result(result: str) -> ConnectionsResult:
             guessed = grouped_category(g)
             if guessed is not None:
                 order.append(guessed)
-        attempts = len(guesses)
+            else:
+                mistakes += 1
         won = len(order) == 4
-        return ConnectionsResult(num, order, attempts, won)
+        return ConnectionsResult(num, order, mistakes, won)
 
 
 connections_pattern = r"ConnectionsPuzzle#(\d+)([🟦🟩🟪🟨]+)"
