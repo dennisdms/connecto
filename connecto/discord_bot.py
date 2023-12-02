@@ -23,6 +23,11 @@ async def on_ready():
     choices=["public", "private"],
 )
 async def stats(ctx, visibility):
+    """Returns the user's connections stats.
+
+    Fetches all messages sent by the user in this channel and uses Connections result strings to compute and return the
+    user's Connections stats.
+    """
     logger.info(f"{ctx.author} issued stats command with {visibility} visibility")
     messages = await get_message_history_raw(ctx.channel, ctx.author)
     user_stats = parse_messages(messages)
@@ -36,6 +41,7 @@ async def stats(ctx, visibility):
 
 
 async def get_message_history_raw(channel, author):
+    """Returns all messages sent by the author in this channel."""
     results = []
     async for m in channel.history(limit=None):
         if author == m.author:
