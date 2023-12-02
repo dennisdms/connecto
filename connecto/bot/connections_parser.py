@@ -29,12 +29,12 @@ class ConnectionsStats:
         attempts: int,
         wins: int,
         mistake_distribution: list[int],
-        attempt_matrix: dict[str, list[int]],
+        group_matrix: dict[str, list[int]],
     ):
         self.attempts = attempts
         self.wins = wins
         self.mistake_distribution = mistake_distribution
-        self.attempt_matrix = attempt_matrix
+        self.group_matrix = group_matrix
 
     def display(self) -> str:
         if self.attempts == 0:
@@ -51,7 +51,7 @@ class ConnectionsStats:
 
     def grouping_order_stats_pretty(self) -> str:
         out = ""
-        for group, attempts in self.attempt_matrix.items():
+        for group, attempts in self.group_matrix.items():
             a_str = ""
             for a in attempts:
                 a_str = a_str + str(a) + " "
@@ -64,7 +64,7 @@ class ConnectionsStats:
             self.attempts == other.attempts
             and self.wins == other.wins
             and self.mistake_distribution == other.mistake_distribution
-            and self.attempt_matrix == other.attempt_matrix
+            and self.group_matrix == other.group_matrix
         )
 
 

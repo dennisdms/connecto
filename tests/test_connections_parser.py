@@ -68,7 +68,7 @@ class TestConnectionsParser(unittest.TestCase):
         self.assertEqual(stats.attempts, 6)
         self.assertEqual(stats.wins, 5)
         self.assertEqual([1, 0, 2, 2, 1], stats.mistake_distribution)
-        self.assertEqual(expected_attempt_matrix, stats.attempt_matrix)
+        self.assertEqual(expected_attempt_matrix, stats.group_matrix)
 
     def test_parse_file(self):
         res = parse_test_file(Path("connections.txt"), "***")
