@@ -9,7 +9,9 @@ bot = discord.Bot(intents=discord.Intents.default())
 
 @bot.event
 async def on_ready():
-    logger.info(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    logger.info(
+        f"Logged in as {bot.user} (ID: {bot.user.id}). Ready to serve commands."
+    )
 
 
 @bot.slash_command(name="stats", description="Get your Connections stats!")
@@ -22,6 +24,8 @@ async def stats(ctx, visibility):
     logger.info(f"{ctx.author} issued stats command with {visibility} visibility")
     messages = await get_message_history_raw(ctx.channel, ctx.author)
     user_stats = parse_messages(messages)
+    result = user_stats.display()
+    logger.info(f"responding to {ctx.author} with {result}")
     if visibility == "public":
         await ctx.respond(user_stats.display())
     elif visibility == "private":
