@@ -59,6 +59,14 @@ class ConnectionsStats:
 
         return out
 
+    def __eq__(self, other) -> bool:
+        return (
+            self.attempts == other.attempts
+            and self.wins == other.wins
+            and self.attempt_distribution == other.attempt_distribution
+            and self.attempt_matrix == other.attempt_matrix
+        )
+
 
 YELLOW = "\U0001f7e8"
 GREEN = "\U0001f7e9"
@@ -78,9 +86,9 @@ def analyze_connections_history(
         PURPLE: [0, 0, 0, 0],
     }
     for attempt in connections_attempts:
+        attempt_distribution[attempt.attempts - 4] += 1
         if attempt.won:
             wins += 1
-            attempt_distribution[attempt.attempts - 4] += 1
             for i, category in enumerate(attempt.group_order):
                 attempt_matrix.get(category)[i] += 1
 
@@ -141,5 +149,16 @@ def is_parsable(possible_connections_game: str) -> bool:
 
 
 def remove_whitespace(s: str) -> str:
-    # Removes whitespace and newline chars from a string
+    """Removes whitespace and newline chars from a string"""
     return "".join(s.split())
+
+
+def parse_messages(messages: list[str]) -> ConnectionsStats:
+    """Parses the given messages into connections stats."""
+    games = {}
+    for message in messages:
+        res = parse_connections_result(message)
+        if res is not None:
+            games[res.puzzle_number] = res
+
+    return analyze_connections_history(list(games.values()))

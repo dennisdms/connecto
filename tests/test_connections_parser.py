@@ -4,6 +4,49 @@ from pathlib import Path
 
 
 class TestConnectionsParser(unittest.TestCase):
+    def test_parse_messages(self):
+        messages = parse_test_file_raw("message_history.txt", "***")
+        res_stats = connections_parser.parse_messages(messages)
+        expected_stats = connections_parser.ConnectionsStats(
+            2,
+            1,
+            [0, 1, 0, 0],
+            {
+                connections_parser.YELLOW: [0, 1, 0, 0],
+                connections_parser.GREEN: [1, 0, 0, 0],
+                connections_parser.BLUE: [0, 0, 0, 1],
+                connections_parser.PURPLE: [0, 0, 1, 0],
+            },
+        )
+        self.assertEquals(expected_stats, res_stats)
+
+    def test_connections_stats_eqals(self):
+        stats = connections_parser.ConnectionsStats(
+            2,
+            1,
+            [0, 1, 0, 1],
+            {
+                connections_parser.YELLOW: [0, 1, 0, 0],
+                connections_parser.GREEN: [1, 0, 0, 0],
+                connections_parser.BLUE: [0, 0, 0, 1],
+                connections_parser.PURPLE: [0, 0, 1, 0],
+            },
+        )
+
+        other_stats = connections_parser.ConnectionsStats(
+            2,
+            1,
+            [0, 1, 0, 1],
+            {
+                connections_parser.YELLOW: [0, 1, 0, 0],
+                connections_parser.GREEN: [1, 0, 0, 0],
+                connections_parser.BLUE: [0, 0, 0, 1],
+                connections_parser.PURPLE: [0, 0, 1, 0],
+            },
+        )
+
+        self.assertTrue(stats == other_stats)
+
     def test_stats_display(self):
         result = parse_test_file("connections.txt", "***")
         stats = connections_parser.analyze_connections_history(result)
@@ -139,7 +182,9 @@ class TestConnectionsParser(unittest.TestCase):
         self.assertEquals(expected, res)
 
 
-def parse_test_file(file, seperator):
+def parse_test_file(
+    file: Path, seperator: str
+) -> list[connections_parser.ConnectionsResult]:
     return connections_parser.parse_file(Path("test_data", file), seperator)
 
 
