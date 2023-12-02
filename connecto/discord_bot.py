@@ -1,9 +1,11 @@
+import sys
 import discord
 import logging
+import os
+from connections_parser import parse_messages
 
-from connecto.bot.connections_parser import parse_messages
-
-logger = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger("connecto")
 bot = discord.Bot(intents=discord.Intents.default())
 
 
@@ -39,3 +41,6 @@ async def get_message_history_raw(channel, author):
         if author == m.author:
             results.append(m.content)
     return results
+
+
+bot.run(os.environ["TOKEN"])
