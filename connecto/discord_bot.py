@@ -49,4 +49,15 @@ async def get_message_history_raw(channel, author):
     return results
 
 
-bot.run(os.environ["TOKEN"])
+def token():
+    """Retrieve the API token, first looking checking env variables and then command line args"""
+    if "TOKEN" in os.environ:
+        return os.environ["TOKEN"]
+
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+
+    raise Exception("No API token passed in")
+
+
+bot.run(token())
